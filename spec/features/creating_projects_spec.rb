@@ -11,5 +11,12 @@ feature 'Creating Projects' do
     click_button 'Create Project'
 
     expect(page).to have_content 'Project has been created.'
+
+    project = Project.where(name: 'Vim 7.4').first
+
+    expect(page.current_url).to eql project_url(project)
+
+    title = 'Vim 7.4 - Projects - Ticketee'
+    expect(page).to have_title title
   end
 end
