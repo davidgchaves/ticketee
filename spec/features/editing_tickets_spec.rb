@@ -2,32 +2,52 @@ require 'spec_helper'
 
 feature "Editing Tickets" do
   let!(:project) { FactoryGirl.create :project }
-  let!(:ticket) { FactoryGirl.create :ticket, project: project }
-
-  before do
-    visit '/'
-    click_link project.name
-    click_link ticket.title
-    click_link "Edit Ticket"
+  let!(:user) { FactoryGirl.create :user }
+  let!(:ticket) do
+    ticket = FactoryGirl.create :ticket, project: project
+    ticket.update user: user
+    ticket
   end
 
-  scenario "Updating a ticket with valid info succeds" do
-    fill_in "Title", with: "Make it really shiny!"
-    click_button "Update Ticket"
-
-    expect(page).to have_content "Ticket has been updated."
-
-    within "#ticket h2" do
-      expect(page).to have_content "Make it really shiny!"
+  context "Once the user has been authenticated" do
+    before do
+      sign_in_as! user
+      visit '/'
+      click_link project.name
+      click_link ticket.title
+      click_link "Edit Ticket"
     end
 
-    expect(page).to_not have_content ticket.title
-  end
+    context "Updating a ticket with valid info" do
+      before do
+        fill_in "Title", with: "Make it really shiny!"
+        click_button "Update Ticket"
+      end
 
-  scenario "Updating a ticket with invalid info fails" do
-    fill_in "Title", with: ""
-    click_button "Update Ticket"
+      scenario "succeeds" do
+        expect(page).to have_content "Ticket has been updated."
+      end
 
-    expect(page).to have_content "Ticket has not been updated."
+      scenario "displays the updated content" do
+        within "#ticket h2" do
+          expect(page).to have_content "Make it really shiny!"
+        end
+      end
+
+      scenario "doesn't display the old content" do
+        expect(page).to_not have_content ticket.title
+      end
+    end
+
+    context "Updating a ticket with invalid info" do
+      before do
+        fill_in "Title", with: ""
+        click_button "Update Ticket"
+      end
+
+      scenario "fails" do
+        expect(page).to have_content "Ticket has not been updated."
+      end
+    end
   end
 end
