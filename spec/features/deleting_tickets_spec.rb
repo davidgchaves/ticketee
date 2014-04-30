@@ -17,7 +17,7 @@ feature "Deleting Tickets" do
       click_link ticket.title
     end
 
-    context "Deleting one of hers tickets" do
+    context "Deleting one of her tickets" do
       before do
         click_link "Delete Ticket"
       end

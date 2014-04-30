@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  before_action :authorize_admin!, except: [:index, :show]
   before_action :find_project, only: [:show, :edit, :update, :destroy]
 
   def index
