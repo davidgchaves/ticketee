@@ -26,5 +26,16 @@ feature "Creating Users" do
 
       expect(page).to have_content "User has not been created."
     end
+
+    scenario "can create an admin user" do
+      fill_in "Email", with: "admin@example.com"
+      fill_in "Password", with: "pwd"
+      check "Is an admin?"
+      click_button "Create User"
+
+      within "#users" do
+        expect(page).to have_content "admin@example.com (Admin)"
+      end
+    end
   end
 end
