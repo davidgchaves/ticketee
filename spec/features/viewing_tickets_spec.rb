@@ -3,26 +3,46 @@ require 'spec_helper'
 feature "Viewing Tickets" do
   let(:user) { FactoryGirl.create :user }
   let!(:project) { FactoryGirl.create :project, name: "Vim" }
-  let!(:ticket) do
+  let!(:shiny_ticket) do
     ticket = FactoryGirl.create :ticket, project: project, title: "Make it shiny!", description: "Gradients! Starbursts! Oh my!"
     ticket.update user: user
     ticket
   end
-
-  before do
-    visit '/'
+  let!(:dark_ticket) do
+    ticket = FactoryGirl.create :ticket, project: project, title: "Make it dark!", description: "Welcome to the darkside"
+    ticket.update user: user
+    ticket
   end
 
-  scenario "Viewing tickets for a given project" do
-    click_link project.name
+  context "Given the user has been authenticated and has view permission over the project" do
+    before do
+      sign_in_as! user
+      define_permission! user, "view", project
 
-    expect(page).to have_content ticket.title
-
-    click_link ticket.title
-    within "#ticket h2" do
-      expect(page).to have_content ticket.title
+      visit "/"
     end
 
-    expect(page).to have_content ticket.description
+    context "Viewing tickets for a given project" do
+      before { click_link project.name }
+
+      scenario "displays associated tickets" do
+        expect(page).to have_content shiny_ticket.title
+        expect(page).to have_content dark_ticket.title
+      end
+
+      context "viewing a concrete ticket" do
+        before { click_link shiny_ticket.title }
+
+        scenario "displays the ticket title" do
+          within "#ticket h2" do
+            expect(page).to have_content shiny_ticket.title
+          end
+        end
+
+        scenario "displays the ticket description" do
+          expect(page).to have_content shiny_ticket.description
+        end
+      end
+    end
   end
 end

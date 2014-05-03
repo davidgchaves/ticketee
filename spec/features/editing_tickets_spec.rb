@@ -9,10 +9,12 @@ feature "Editing Tickets" do
     ticket
   end
 
-  context "Once the user has been authenticated" do
+  context "Given the user has been authenticated and has view permission over the project" do
     before do
       sign_in_as! user
-      visit '/'
+      define_permission! user, "view", project
+
+      visit "/"
       click_link project.name
       click_link ticket.title
       click_link "Edit Ticket"

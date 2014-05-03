@@ -1,19 +1,12 @@
 require 'spec_helper'
 
 feature "Creating Tickets" do
-  let!(:project) { FactoryGirl.create :project }
-  let!(:user) { FactoryGirl.create :user }
+  let(:project) { FactoryGirl.create :project }
+  let(:user) { FactoryGirl.create :user }
 
-  scenario "A user must be authenticated" do
-    visit '/'
-    click_link project.name
-    click_link "New Ticket"
-
-    expect(page).to have_content "You need to sign in or sign up before continuing."
-  end
-
-  context "Once the user has been authenticated" do
+  context "Given the user has been authenticated and has view permission over the project" do
     before do
+      define_permission! user, "view", project
       sign_in_as! user
 
       click_link project.name
