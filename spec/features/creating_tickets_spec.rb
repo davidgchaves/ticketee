@@ -33,7 +33,7 @@ feature "Creating Tickets" do
 
       scenario "links the ticket with the user who created it" do
         within "#ticket #author" do
-          expect(page).to have_content "Created by email@example.com"
+          expect(page).to have_content "Created by #{user.email}"
         end
       end
     end
