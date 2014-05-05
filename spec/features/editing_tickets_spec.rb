@@ -3,16 +3,13 @@ require 'spec_helper'
 feature "Editing Tickets" do
   let!(:project) { FactoryGirl.create :project }
   let!(:user) { FactoryGirl.create :user }
-  let!(:ticket) do
-    ticket = FactoryGirl.create :ticket, project: project
-    ticket.update user: user
-    ticket
-  end
+  let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "Given the user has been authenticated and has view permission over the project" do
+  context "Given the user has been authenticated and has 'view' and 'edit tickets' permissions over the project" do
     before do
       sign_in_as! user
       define_permission! user, "view", project
+      define_permission! user, "edit tickets", project
 
       visit "/"
       click_link project.name
@@ -20,7 +17,7 @@ feature "Editing Tickets" do
       click_link "Edit Ticket"
     end
 
-    context "Updating a ticket with valid info" do
+    context "When updating a ticket with valid info" do
       before do
         fill_in "Title", with: "Make it really shiny!"
         click_button "Update Ticket"
@@ -41,7 +38,7 @@ feature "Editing Tickets" do
       end
     end
 
-    context "Updating a ticket with invalid info" do
+    context "When updating a ticket with invalid info" do
       before do
         fill_in "Title", with: ""
         click_button "Update Ticket"

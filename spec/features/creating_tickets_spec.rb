@@ -6,9 +6,9 @@ feature "Creating Tickets" do
 
   context "Given the user has been authenticated and has 'view' and 'create tickets' permissions over the project" do
     before do
+      sign_in_as! user
       define_permission! user, "view", project
       define_permission! user, "create tickets", project
-      sign_in_as! user
 
       visit "/"
       click_link project.name

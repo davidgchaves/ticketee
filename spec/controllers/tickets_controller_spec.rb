@@ -50,5 +50,33 @@ describe TicketsController do
         end
       end
     end
+
+    context "with permission to view the project but without permission to edit tickets" do
+      before { define_permission! user, "view", project }
+
+      context "tries to edit a ticket accessing the #edit controller action" do
+        before { get :edit, project_id: project.id, id: ticket.id }
+
+        it "gets redirected to the project root page" do
+          expect(response).to redirect_to project
+        end
+
+        it "gets a message stating you can't edit tickets for this project" do
+          expect(flash[:alert]).to eq "You cannot edit tickets on this project."
+        end
+      end
+
+      context "tries to update a ticket accessing the #update controller action" do
+        before { put :update, project_id: project.id, id: ticket.id, ticket: {} }
+
+        it "gets redirected to the project root page" do
+          expect(response).to redirect_to project
+        end
+
+        it "gets a message stating you can't edit tickets for this project" do
+          expect(flash[:alert]).to eq "You cannot edit tickets on this project."
+        end
+      end
+    end
   end
 end
