@@ -78,5 +78,21 @@ describe TicketsController do
         end
       end
     end
+
+    context "with permission to view the project but without permission to delete tickets" do
+      before { define_permission! user, "view", project }
+
+      context "tries to delete a ticket accessing the #destroy controller action" do
+        before { delete :destroy, project_id: project.id, id: ticket.id }
+
+        it "gets redirected to the project root page" do
+          expect(response).to redirect_to project
+        end
+
+        it "gets a message stating you can't delete tickets for this project" do
+          expect(flash[:alert]).to eq "You cannot delete tickets on this project."
+        end
+      end
+    end
   end
 end

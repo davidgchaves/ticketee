@@ -3,23 +3,20 @@ require 'spec_helper'
 feature "Deleting Tickets" do
   let!(:project) { FactoryGirl.create :project }
   let!(:user) { FactoryGirl.create :user }
-  let!(:ticket) do
-    ticket = FactoryGirl.create :ticket, project: project
-    ticket.update user: user
-    ticket
-  end
+  let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "Given the user has been authenticated and has view permission over the project" do
+  context "Given the user has been authenticated and has 'view' and 'delete tickets' permissions over the project" do
     before do
       sign_in_as! user
       define_permission! user, "view", project
+      define_permission! user, "delete tickets", project
 
       visit '/'
       click_link project.name
       click_link ticket.title
     end
 
-    context "Deleting a ticket" do
+    context "When deleting a ticket" do
       before do
         click_link "Delete Ticket"
       end
