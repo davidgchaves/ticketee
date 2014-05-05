@@ -2,61 +2,181 @@ require 'spec_helper'
 
 feature "Hidden Links" do
   let(:project) { FactoryGirl.create :project }
+  let(:user) { FactoryGirl.create :user }
+  let(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "Anonymous users" do
-    scenario "cannot see the New Project link" do
-      visit "/"
-      expect(page).to_not have_link "New Project"
+  context "Given an anonymous user" do
+    context "When visiting the root page" do
+      before { visit "/" }
+
+      scenario "cannot see the 'New Project' link" do
+        expect(page).to_not have_link "New Project"
+      end
     end
 
-    scenario "cannot see the Edit Project link" do
-      visit project_path project
-      expect(page).to_not have_link "Edit Project"
-    end
+    context "When visiting a project page" do
+      before { visit project_path project }
 
-    scenario "cannot see the Delete Project link" do
-      visit project_path project
-      expect(page).to_not have_link "Delete Project"
+      scenario "cannot see the 'Edit Project' link" do
+        expect(page).to_not have_link "Edit Project"
+      end
+
+      scenario "cannot see the 'Delete Project' link" do
+        expect(page).to_not have_link "Delete Project"
+      end
     end
   end
 
-  context "Regular users" do
-    let(:user) { FactoryGirl.create :user }
+  context "Given a regular user has been authenticated" do
     before { sign_in_as! user }
 
-    scenario "cannot see the New Project link" do
-      visit "/"
-      expect(page).to_not have_link "New Project"
+    context "and has no permissions over a project" do
+
+      context "When visiting the root page" do
+        before { visit "/" }
+
+        scenario "cannot see the 'New Project' link" do
+          expect(page).to_not have_link "New Project"
+        end
+      end
+
+      context "When visiting the project page" do
+        before { visit project_path project }
+
+        scenario "cannot see the 'Edit Project' link" do
+          expect(page).to_not have_link "Edit Project"
+        end
+
+        scenario "cannot see the 'Delete Project' link" do
+          expect(page).to_not have_link "Delete Project"
+        end
+      end
     end
 
-    scenario "cannot see the Edit Project link" do
-      visit project_path project
-      expect(page).to_not have_link "Edit Project"
+    context "and has 'view' and 'create tickets' permissions over the project" do
+      before do
+        define_permission! user, "view", project
+        define_permission! user, "create tickets", project
+      end
+
+      context "When visiting the project page" do
+        before { visit project_path(project) }
+
+        scenario "can see the 'New Ticket' link" do
+          expect(page).to have_link "New Ticket"
+        end
+      end
     end
 
-    scenario "cannot see the Delete Project link" do
-      visit project_path project
-      expect(page).to_not have_link "Delete Project"
+    context "and has 'view' and 'edit tickets' permissions over the project" do
+      before do
+        define_permission! user, "view", project
+        define_permission! user, "edit tickets", project
+      end
+
+      context "When visiting the project page and clicking on the ticket" do
+        before do
+          ticket
+          visit project_path(project)
+          click_link ticket.title
+        end
+
+        scenario "can see the 'Edit Ticket' link" do
+          expect(page).to have_link "Edit Ticket"
+        end
+      end
+    end
+
+    context "and has 'view' and 'delete tickets' permissions over the project" do
+      before do
+        define_permission! user, "view", project
+        define_permission! user, "delete tickets", project
+      end
+
+      context "When visiting the project page and clicking on the ticket" do
+        before do
+          ticket
+          visit project_path(project)
+          click_link ticket.title
+        end
+
+        scenario "can see the 'Delete Ticket' link" do
+          expect(page).to have_link "Delete Ticket"
+        end
+      end
+    end
+
+    context "and only has 'view' permission over the project" do
+      before { define_permission! user, "view", project }
+
+      context "When visiting the project page" do
+        before { visit project_path(project) }
+
+        scenario "cannot see the 'New Ticket' link" do
+          expect(page).to_not have_link "New Ticket"
+        end
+      end
+
+      context "When visiting the project page and clicking on a ticket" do
+        before do
+          ticket
+          visit project_path(project)
+          click_link ticket.title
+        end
+
+        scenario "cannot see the 'Edit Ticket' link" do
+          expect(page).to_not have_link "Edit Ticket"
+        end
+
+        scenario "cannot see the 'Delete Ticket' link" do
+          expect(page).to_not have_link "Delete Ticket"
+        end
+      end
     end
   end
 
-  context "Admin users" do
+  context "Given an admin user has been authenticated" do
     let(:admin_user) { FactoryGirl.create :admin_user }
     before { sign_in_as! admin_user }
 
-    scenario "can see the New Project link" do
-      visit "/"
-      expect(page).to have_link "New Project"
+    context "When visiting the root page" do
+      before { visit "/" }
+
+      scenario "can see the 'New Project' link" do
+        expect(page).to have_link "New Project"
+      end
     end
 
-    scenario "can see the Edit Project link" do
-      visit project_path project
-      expect(page).to have_link "Edit Project"
+    context "When visiting a project page" do
+      before { visit project_path(project) }
+
+      scenario "can see the 'Edit Project' link" do
+        expect(page).to have_link "Edit Project"
+      end
+
+      scenario "can see the 'Delete Project' link" do
+        expect(page).to have_link "Delete Project"
+      end
+
+      scenario "can see the 'New Ticket' link" do
+        expect(page).to have_link "New Ticket"
+      end
     end
 
-    scenario "can see the Delete Project link" do
-      visit project_path project
-      expect(page).to have_link "Delete Project"
+    context "When visiting a project page and clicking on a ticket" do
+      before do
+        ticket
+        visit project_path(project)
+        click_link ticket.title
+      end
+
+      scenario "can see the 'Edit Ticket' link" do
+        expect(page).to have_link "Edit Ticket"
+      end
+
+      scenario "can see the 'Delete Ticket' link" do
+        expect(page).to have_link "Delete Ticket"
+      end
     end
   end
 end
