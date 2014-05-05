@@ -4,16 +4,18 @@ feature "Creating Tickets" do
   let(:project) { FactoryGirl.create :project }
   let(:user) { FactoryGirl.create :user }
 
-  context "Given the user has been authenticated and has view permission over the project" do
+  context "Given the user has been authenticated and has 'view' and 'create tickets' permissions over the project" do
     before do
       define_permission! user, "view", project
+      define_permission! user, "create tickets", project
       sign_in_as! user
 
+      visit "/"
       click_link project.name
       click_link "New Ticket"
     end
 
-    context "Creating a ticket with valid attributes" do
+    context "When creating a ticket with valid attributes" do
       before do
         fill_in "Title", with: "Non-standards compliance"
         fill_in "Description", with: "My pages are ugly!"
@@ -31,7 +33,7 @@ feature "Creating Tickets" do
       end
     end
 
-    context "Creating a ticket with blank attributes" do
+    context "When creating a ticket with blank attributes" do
       before do
         click_button "Create Ticket"
       end
