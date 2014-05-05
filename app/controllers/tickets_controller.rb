@@ -1,5 +1,5 @@
 class TicketsController < ApplicationController
-  before_action :require_signin!, except: [:show, :index]
+  before_action :require_signin!
   before_action :find_project
   before_action :find_ticket, only: [:show, :edit, :update, :destroy]
 
@@ -44,7 +44,10 @@ class TicketsController < ApplicationController
   private
 
     def find_project
-      @project = Project.find params[:project_id]
+      @project = Project.for(current_user).find params[:project_id]
+    rescue ActiveRecord::RecordNotFound
+      flash[:alert] = "The project you were looking for could not be found."
+      redirect_to root_path
     end
 
     def find_ticket
