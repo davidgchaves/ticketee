@@ -16,4 +16,4 @@
 /tmp
 
 # Leftover files container from tests
-public/uploads
+/uploads
