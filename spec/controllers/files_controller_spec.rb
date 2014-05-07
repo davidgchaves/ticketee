@@ -14,7 +14,7 @@ describe FilesController do
       good_user.permissions.create! action: "view", thing: project
     end
 
-    context "tries to access a project's asset" do
+    context "requests a project's asset" do
       before { get :show, id: asset.id }
 
       it "succeeds" do
@@ -26,14 +26,14 @@ describe FilesController do
   context "When a signed in user with no 'view' (project) permission" do
     before { sign_in bad_user }
 
-    context "tries to access a project's asset" do
+    context "requests a project's asset" do
       before { get :show, id: asset.id }
 
       it "gets redirected to the root page" do
         expect(response).to redirect_to root_path
       end
 
-      it "gets alerted the asset could not be found" do
+      it "gets the message 'the asset could not be found'" do
         expect(flash[:alert]).to eq "The asset you were looking for could not be found."
       end
     end
