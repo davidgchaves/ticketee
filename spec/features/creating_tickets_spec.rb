@@ -4,7 +4,7 @@ feature "Creating Tickets" do
   let(:project) { FactoryGirl.create :project }
   let(:user) { FactoryGirl.create :user }
 
-  context "Given the user has been authenticated and has 'view' and 'create tickets' permissions over the project" do
+  context "Given a user with 'view' (project) and 'create tickets' permissions" do
     before do
       sign_in_as! user
       define_permission! user, "view", project
@@ -15,7 +15,7 @@ feature "Creating Tickets" do
       click_link "New Ticket"
     end
 
-    context "When creating a ticket with valid attributes" do
+    context "When she creates a ticket with valid attributes" do
       before do
         fill_in "Title", with: "Non-standards compliance"
         fill_in "Description", with: "My pages are ugly!"
@@ -33,7 +33,7 @@ feature "Creating Tickets" do
       end
     end
 
-    context "When creating a ticket with blank attributes" do
+    context "When she creates a ticket with blank attributes" do
       before do
         click_button "Create Ticket"
       end
@@ -42,6 +42,25 @@ feature "Creating Tickets" do
         expect(page).to have_content "Ticket has not been created."
         expect(page).to have_content "Title can't be blank"
         expect(page).to have_content "Description can't be blank"
+      end
+    end
+
+    context "When she creates a ticket with an attachment" do
+      before do
+        fill_in "Title", with: "Add documentation for blink tag"
+        fill_in "Description", with: "The blink tag has a speed attribute"
+        attach_file "File", "spec/fixtures/speed.txt"
+        click_button "Create Ticket"
+      end
+
+      scenario "succeeds" do
+        expect(page).to have_content "Ticket has been created."
+      end
+
+      scenario "can see the attachement" do
+        within "#ticket .asset" do
+          expect(page).to have_content "speed.txt"
+        end
       end
     end
   end
