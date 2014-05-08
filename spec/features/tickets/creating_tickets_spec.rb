@@ -45,7 +45,7 @@ feature "Creating Tickets" do
       end
     end
 
-    context "When she creates a ticket with three attachments" do
+    context "When she creates a ticket with three attachments", js: true do
       before do
         fill_in "Title", with: "Add documentation for blink tag"
         fill_in "Description", with: "The blink tag has a speed attribute"
