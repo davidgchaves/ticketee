@@ -45,13 +45,15 @@ feature "Creating Tickets" do
       end
     end
 
-    context "When she creates a ticket with three attachments", js: true do
+    context "When she creates a ticket with two attachments", js: true do
       before do
         fill_in "Title", with: "Add documentation for blink tag"
         fill_in "Description", with: "The blink tag has a speed attribute"
+
         attach_file "File #1", Rails.root.join("spec/fixtures/speed.txt")
+        click_link "Add another file"
+
         attach_file "File #2", Rails.root.join("spec/fixtures/spin.txt")
-        attach_file "File #3", Rails.root.join("spec/fixtures/gradient.txt")
         click_button "Create Ticket"
       end
 
@@ -63,7 +65,6 @@ feature "Creating Tickets" do
         within "#ticket .assets" do
           expect(page).to have_content "speed.txt"
           expect(page).to have_content "spin.txt"
-          expect(page).to have_content "gradient.txt"
         end
       end
     end
