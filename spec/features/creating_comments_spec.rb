@@ -7,7 +7,7 @@ feature "Creating Comments" do
     let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
     before do
-      define_permission! user, 'view', project
+      define_permission! user, "view", project
       FactoryGirl.create :state, name: "Open"
       sign_in_as! user
     end
@@ -33,11 +33,17 @@ feature "Creating Comments" do
         end
       end
 
-      scenario "can see the comment's state" do
-        within "#ticket .state" do
+      scenario "can see the new comment status" do
+        within "#ticket .states .state_open" do
           expect(page).to have_content "Open"
         end
       end
+
+       scenario "can see the change in the ticket status" do
+         within "#comments" do
+           expect(page).to have_content "State: Open"
+         end
+       end
     end
 
     context "When she adds a blank comment to a ticket" do
