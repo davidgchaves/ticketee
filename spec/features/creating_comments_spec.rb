@@ -8,6 +8,7 @@ feature "Creating Comments" do
 
     before do
       define_permission! user, 'view', project
+      FactoryGirl.create :state, name: "Open"
       sign_in_as! user
     end
 
@@ -18,6 +19,7 @@ feature "Creating Comments" do
         click_link ticket.title
 
         fill_in "Text", with: "Added a comment!"
+        select "Open", from: "State"
         click_button "Create Comment"
       end
 
@@ -30,9 +32,15 @@ feature "Creating Comments" do
           expect(page).to have_content "Added a comment!"
         end
       end
+
+      scenario "can see the comment's state" do
+        within "#ticket .state" do
+          expect(page).to have_content "Open"
+        end
+      end
     end
 
-    context "When she adds an invalid comment to a ticket" do
+    context "When she adds a blank comment to a ticket" do
       before do
         visit "/"
         click_link project.name
