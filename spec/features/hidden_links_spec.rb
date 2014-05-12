@@ -53,9 +53,9 @@ feature "Hidden Links" do
       end
     end
 
-    context "and has 'view' and 'create tickets' permissions over the project" do
+    context "and has 'view project' and 'create tickets' permissions" do
       before do
-        define_permission! user, "view", project
+        define_permission! user, "view project", project
         define_permission! user, "create tickets", project
       end
 
@@ -68,9 +68,9 @@ feature "Hidden Links" do
       end
     end
 
-    context "and has 'view' and 'edit tickets' permissions over the project" do
+    context "and has 'view project' and 'edit tickets' permissions" do
       before do
-        define_permission! user, "view", project
+        define_permission! user, "view project", project
         define_permission! user, "edit tickets", project
       end
 
@@ -87,9 +87,9 @@ feature "Hidden Links" do
       end
     end
 
-    context "and has 'view' and 'delete tickets' permissions over the project" do
+    context "and has 'view project' and 'delete tickets' permissions" do
       before do
-        define_permission! user, "view", project
+        define_permission! user, "view project", project
         define_permission! user, "delete tickets", project
       end
 
@@ -106,8 +106,8 @@ feature "Hidden Links" do
       end
     end
 
-    context "and only has 'view' permission over the project" do
-      before { define_permission! user, "view", project }
+    context "and only has 'view project' permission" do
+      before { define_permission! user, "view project", project }
 
       context "When visiting the project page" do
         before { visit project_path(project) }

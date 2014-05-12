@@ -5,10 +5,10 @@ feature "Deleting Tickets" do
   let!(:user) { FactoryGirl.create :user }
   let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "Given the user has been authenticated and has 'view' and 'delete tickets' permissions over the project" do
+  context "Given a signed in user with 'view project' and 'delete tickets' permissions" do
     before do
       sign_in_as! user
-      define_permission! user, "view", project
+      define_permission! user, "view project", project
       define_permission! user, "delete tickets", project
 
       visit '/'
@@ -16,7 +16,7 @@ feature "Deleting Tickets" do
       click_link ticket.title
     end
 
-    context "When deleting a ticket" do
+    context "When she deletes a ticket" do
       before do
         click_link "Delete Ticket"
       end
@@ -25,7 +25,7 @@ feature "Deleting Tickets" do
         expect(page).to have_content "Ticket has been deleted."
       end
 
-      scenario "redirects to the project root url" do
+      scenario "gets redirected to the project root url" do
         expect(page.current_url).to eq project_url(project)
       end
     end

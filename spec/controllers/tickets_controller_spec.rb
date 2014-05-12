@@ -5,7 +5,7 @@ describe TicketsController do
   let(:project) { FactoryGirl.create :project }
   let(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "When a signed in user with no 'view' (project) permission" do
+  context "When a signed in user with no 'view project' permission" do
     before { sign_in user }
 
     context "accesses #show" do
@@ -21,10 +21,10 @@ describe TicketsController do
     end
   end
 
-  context "When a signed in user with only 'view' (project) permission" do
+  context "When a signed in user with only 'view project' permission" do
     before do
       sign_in user
-      define_permission! user, "view", project
+      define_permission! user, "view project", project
     end
 
     context "accesses #new" do

@@ -6,12 +6,12 @@ feature "Assigning Permissions" do
   let!(:project) { FactoryGirl.create :project }
   let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "Given an admin grants a user 'view' (project) permission" do
+  context "Given an admin grants a user 'view project' permission" do
     before do
       sign_in_as! admin
       navigate_to_permissions_for_user_screen user
 
-      check_permission_box "view", project
+      check_permission_box "view_project", project
 
       click_button "Update"
       click_link "Sign out"
@@ -26,12 +26,12 @@ feature "Assigning Permissions" do
     end
   end
 
-  context "Given an admin grants a user 'view' (project) and 'create tickets' permissions" do
+  context "Given an admin grants a user 'view project' and 'create tickets' permissions" do
     before do
       sign_in_as! admin
       navigate_to_permissions_for_user_screen user
 
-      check_permission_box "view", project
+      check_permission_box "view_project", project
       check_permission_box "create_tickets", project
 
       click_button "Update"
@@ -53,12 +53,12 @@ feature "Assigning Permissions" do
     end
   end
 
-  context "Given an admin grants a user 'view' (project) and 'edit tickets' permissions" do
+  context "Given an admin grants a user 'view project' and 'edit tickets' permissions" do
     before do
       sign_in_as! admin
       navigate_to_permissions_for_user_screen user
 
-      check_permission_box "view", project
+      check_permission_box "view_project", project
       check_permission_box "edit_tickets", project
 
       click_button "Update"
@@ -80,12 +80,12 @@ feature "Assigning Permissions" do
     end
   end
 
-  context "Given an admin grants a user 'view' (project) and 'delete tickets' permissions" do
+  context "Given an admin grants a user 'view project' and 'delete tickets' permissions" do
     before do
       sign_in_as! admin
       navigate_to_permissions_for_user_screen user
 
-      check_permission_box "view", project
+      check_permission_box "view_project", project
       check_permission_box "delete_tickets", project
 
       click_button "Update"
@@ -105,12 +105,12 @@ feature "Assigning Permissions" do
     end
   end
 
-  context "Given an admin grants a user 'view' (project) and 'change states' permissions" do
+  context "Given an admin grants a user 'view project' and 'change states' permissions" do
     before do
       sign_in_as! admin
       navigate_to_permissions_for_user_screen user
 
-      check_permission_box "view", project
+      check_permission_box "view_project", project
       check_permission_box "change_states", project
 
       click_button "Update"

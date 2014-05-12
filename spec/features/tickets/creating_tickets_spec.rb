@@ -4,10 +4,10 @@ feature "Creating Tickets" do
   let(:project) { FactoryGirl.create :project }
   let(:user) { FactoryGirl.create :user }
 
-  context "Given a user with 'view' (project) and 'create tickets' permissions" do
+  context "Given a user with 'view project' and 'create tickets' permissions" do
     before do
       sign_in_as! user
-      define_permission! user, "view", project
+      define_permission! user, "view project", project
       define_permission! user, "create tickets", project
 
       visit "/"

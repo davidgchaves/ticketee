@@ -5,9 +5,9 @@ feature "Creating Comments" do
   let!(:project) { FactoryGirl.create :project }
   let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "Given a user with 'view' (project) permission" do
+  context "Given a user with 'view project' permission" do
     before do
-      define_permission! user, "view", project
+      define_permission! user, "view project", project
       FactoryGirl.create :state, name: "Open"
       sign_in_as! user
     end
@@ -33,7 +33,6 @@ feature "Creating Comments" do
       end
     end
 
-
     context "When she adds a blank comment to a ticket" do
       before do
         visit "/"
@@ -53,9 +52,9 @@ feature "Creating Comments" do
     end
   end
 
-  context "Given a user with 'view' (project) and 'change states' permissions" do
+  context "Given a user with 'view project' and 'change states' permissions" do
     before do
-      define_permission! user, "view", project
+      define_permission! user, "view project", project
       define_permission! user, "change states", project
       FactoryGirl.create :state, name: "Open"
       sign_in_as! user
@@ -88,7 +87,7 @@ feature "Creating Comments" do
 
   context "Given a user with no 'change states' permission" do
     before do
-      define_permission! user, "view", project
+      define_permission! user, "view project", project
       FactoryGirl.create :state, name: "Open"
       sign_in_as! user
     end

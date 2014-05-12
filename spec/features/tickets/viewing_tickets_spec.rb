@@ -14,32 +14,33 @@ feature "Viewing Tickets" do
     ticket
   end
 
-  context "Given the user has been authenticated and has view permission over the project" do
+  context "Given a signed in user with 'view project' permission" do
     before do
       sign_in_as! user
-      define_permission! user, "view", project
-
-      visit "/"
+      define_permission! user, "view project", project
     end
 
-    context "Viewing tickets for a given project" do
-      before { click_link project.name }
+    context "When she navigates to the project page" do
+      before do
+        visit "/"
+        click_link project.name
+    end
 
-      scenario "displays associated tickets" do
+      scenario "Then she can see the associated tickets" do
         expect(page).to have_content shiny_ticket.title
         expect(page).to have_content dark_ticket.title
       end
 
-      context "viewing a concrete ticket" do
+      context "When she navigates to a concrete ticket" do
         before { click_link shiny_ticket.title }
 
-        scenario "displays the ticket title" do
+        scenario "Then she can see the ticket's title" do
           within "#ticket h2" do
             expect(page).to have_content shiny_ticket.title
           end
         end
 
-        scenario "displays the ticket description" do
+        scenario "Then she can see the ticket's description" do
           expect(page).to have_content shiny_ticket.description
         end
       end

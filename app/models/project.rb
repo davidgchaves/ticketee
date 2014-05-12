@@ -4,7 +4,7 @@ class Project < ActiveRecord::Base
   has_many :permissions, as: :thing
 
   scope :viewable_by, ->(user) do
-    joins(:permissions).where permissions: { action: "view", user_id: user.id }
+    joins(:permissions).where permissions: { action: "view project", user_id: user.id }
   end
 
   scope :for, ->(user) do

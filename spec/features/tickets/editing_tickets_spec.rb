@@ -5,10 +5,10 @@ feature "Editing Tickets" do
   let!(:user) { FactoryGirl.create :user }
   let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
-  context "Given the user has been authenticated and has 'view' and 'edit tickets' permissions over the project" do
+  context "Given a signed in user with 'view project' and 'edit tickets' permissions" do
     before do
       sign_in_as! user
-      define_permission! user, "view", project
+      define_permission! user, "view project", project
       define_permission! user, "edit tickets", project
 
       visit "/"
@@ -17,7 +17,7 @@ feature "Editing Tickets" do
       click_link "Edit Ticket"
     end
 
-    context "When updating a ticket with valid info" do
+    context "When she updates a ticket with valid info" do
       before do
         fill_in "Title", with: "Make it really shiny!"
         click_button "Update Ticket"
@@ -38,7 +38,7 @@ feature "Editing Tickets" do
       end
     end
 
-    context "When updating a ticket with invalid info" do
+    context "When she updates a ticket with invalid info" do
       before do
         fill_in "Title", with: ""
         click_button "Update Ticket"
