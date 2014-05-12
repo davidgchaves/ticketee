@@ -20,5 +20,6 @@
       <%= f.select :state_id, @states.map { |state| [state.name, state.id] }, selected: @ticket.state_id %>
     </p>
   <% end %>
+  <%= render "tags/form", f: f %>
   <%= f.submit %>
 <% end %>

@@ -21,7 +21,7 @@ class CommentsController < ApplicationController
   private
 
     def comment_params
-      params.require(:comment).permit :text, :state_id
+      params.require(:comment).permit :text, :state_id, :tag_names
     end
 
     def prevent_unauthorize_hacking_of_state_id
