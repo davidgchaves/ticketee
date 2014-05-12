@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 feature "Creating Comments" do
-  context "Given a user with 'view' (project) permission" do
-    let!(:user) { FactoryGirl.create :user }
-    let!(:project) { FactoryGirl.create :project }
-    let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
+  let!(:user) { FactoryGirl.create :user }
+  let!(:project) { FactoryGirl.create :project }
+  let!(:ticket) { FactoryGirl.create :ticket, project: project, user: user }
 
+  context "Given a user with 'view' (project) permission" do
     before do
       define_permission! user, "view", project
       FactoryGirl.create :state, name: "Open"
@@ -19,7 +19,6 @@ feature "Creating Comments" do
         click_link ticket.title
 
         fill_in "Text", with: "Added a comment!"
-        select "Open", from: "State"
         click_button "Create Comment"
       end
 
@@ -32,19 +31,8 @@ feature "Creating Comments" do
           expect(page).to have_content "Added a comment!"
         end
       end
-
-      scenario "can see the new comment status" do
-        within "#ticket .states .state_open" do
-          expect(page).to have_content "Open"
-        end
-      end
-
-       scenario "can see the change in the ticket status" do
-         within "#comments" do
-           expect(page).to have_content "State: Open"
-         end
-       end
     end
+
 
     context "When she adds a blank comment to a ticket" do
       before do
@@ -62,6 +50,55 @@ feature "Creating Comments" do
       scenario "gets the message 'Text can't be blank'" do
         expect(page).to have_content "Text can't be blank"
       end
+    end
+  end
+
+  context "Given a user with 'view' (project) and 'change states' permissions" do
+    before do
+      define_permission! user, "view", project
+      define_permission! user, "change states", project
+      FactoryGirl.create :state, name: "Open"
+      sign_in_as! user
+    end
+
+    context "When she changes the comment status" do
+      before do
+        visit "/"
+        click_link project.name
+        click_link ticket.title
+
+        fill_in "Text", with: "Added a comment!"
+        select "Open", from: "State"
+        click_button "Create Comment"
+      end
+
+      scenario "can see the new comment status" do
+        within "#ticket .states .state_open" do
+          expect(page).to have_content "Open"
+        end
+      end
+
+      scenario "can see the change in the ticket status" do
+        within "#comments" do
+          expect(page).to have_content "State: Open"
+        end
+      end
+    end
+  end
+
+  context "Given a user with no 'change states' permission" do
+    before do
+      define_permission! user, "view", project
+      FactoryGirl.create :state, name: "Open"
+      sign_in_as! user
+    end
+
+    scenario "Then she can't change the state" do
+      visit "/"
+      click_link project.name
+      click_link ticket.title
+
+      expect { find "#comment_state_id" }.to raise_error Capybara::ElementNotFound
     end
   end
 end

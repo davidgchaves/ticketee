@@ -105,6 +105,37 @@ feature "Assigning Permissions" do
     end
   end
 
+  context "Given an admin grants a user 'view' (project) and 'change states' permissions" do
+    before do
+      sign_in_as! admin
+      navigate_to_permissions_for_user_screen user
+
+      check_permission_box "view", project
+      check_permission_box "change_states", project
+
+      click_button "Update"
+      click_link "Sign out"
+    end
+
+    context "When the user signs in" do
+      before { sign_in_as! user }
+
+      scenario "Then she can create a comment for that project changing the state for the ticket" do
+        State.create! name: "Open"
+        click_link project.name
+        click_link ticket.title
+        fill_in "Text", with: "Opening this ticket."
+        select "Open", from: "State"
+        click_button "Create Comment"
+
+        within "#ticket" do
+          expect(page).to have_content "Open"
+        end
+      end
+
+    end
+  end
+
   private
 
     def navigate_to_permissions_for_user_screen(user)
