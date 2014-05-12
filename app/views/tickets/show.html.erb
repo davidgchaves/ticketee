@@ -2,6 +2,7 @@
   <h2><%= @ticket.title %></h2>
 
   <%= simple_format @ticket.description %>
+  <div id="tags"><%= render @ticket.tags %></div>
   <span id="author">Created by <%= @ticket.user.email %></span>
 
   <%= render @ticket.state if @ticket.state %>

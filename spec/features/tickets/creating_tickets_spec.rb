@@ -68,5 +68,25 @@ feature "Creating Tickets" do
         end
       end
     end
+
+    context "When she creates a ticket with tags" do
+      before do
+        fill_in "Title", with: "Non-standards compliance"
+        fill_in "Description", with: "My pages are ugly!"
+        fill_in "Tags", with: "browser visual"
+        click_button "Create Ticket"
+      end
+
+      scenario "succeeds" do
+        expect(page).to have_content "Ticket has been created."
+      end
+
+      scenario "can see the tags" do
+        within "#ticket #tags" do
+          expect(page).to have_content "browser"
+          expect(page).to have_content "visual"
+        end
+      end
+    end
   end
 end
