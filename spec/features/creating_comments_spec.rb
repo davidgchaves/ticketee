@@ -50,38 +50,6 @@ feature "Creating Comments" do
         expect(page).to have_content "Text can't be blank"
       end
     end
-
-    context "When she adds a tag to a ticket" do
-      before do
-        visit "/"
-        click_link project.name
-        click_link ticket.title
-      end
-
-      scenario "checks if the tag already exists" do
-        within "#ticket #tags" do
-          expect(page).to_not have_content "bug"
-        end
-      end
-
-      context "if the tag isn't associated to the ticket" do
-        before do
-          fill_in "Text", with: "Adding the bug tag"
-          fill_in "Tags", with: "bug"
-          click_button "Create Comment"
-        end
-
-        scenario "creates the ticket" do
-          expect(page).to have_content "Comment has been created."
-        end
-
-        scenario "adds the tag" do
-          within "#ticket #tags" do
-            expect(page).to have_content "bug"
-          end
-        end
-      end
-    end
   end
 
   context "Given a user with 'view project' and 'change states' permissions" do
@@ -130,6 +98,46 @@ feature "Creating Comments" do
       click_link ticket.title
 
       expect { find "#comment_state_id" }.to raise_error Capybara::ElementNotFound
+    end
+  end
+
+  context "Given a user with 'view project' and 'tag' permissions" do
+    before do
+      define_permission! user, "view project", project
+      define_permission! user, "tag", project
+      sign_in_as! user
+    end
+
+    context "When she adds a tag to a ticket" do
+      before do
+        visit "/"
+        click_link project.name
+        click_link ticket.title
+      end
+
+      scenario "checks if the tag already exists" do
+        within "#ticket #tags" do
+          expect(page).to_not have_content "bug"
+        end
+      end
+
+      context "if the tag isn't associated to the ticket" do
+        before do
+          fill_in "Text", with: "Adding the bug tag"
+          fill_in "Tags", with: "bug"
+          click_button "Create Comment"
+        end
+
+        scenario "creates the ticket" do
+          expect(page).to have_content "Comment has been created."
+        end
+
+        scenario "adds the tag" do
+          within "#ticket #tags" do
+            expect(page).to have_content "bug"
+          end
+        end
+      end
     end
   end
 end

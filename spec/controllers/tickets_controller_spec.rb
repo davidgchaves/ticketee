@@ -87,4 +87,23 @@ describe TicketsController do
       end
     end
   end
+
+  context "Given a signed in user with 'view project' and 'create tickets' but without 'tag' permissions" do
+    before do
+      sign_in user
+      define_permission! user, "view project", project
+      Permission.create user: user, thing: project, action: "create tickets"
+    end
+
+    context "When she tries to tag a ticket" do
+      before do
+        post :create, { ticket: { title: "Tag!", description: "Brand sparkin' new!", tag_names: "one two" },
+                        project_id: project.id }
+      end
+
+      it "gets a ticket with empty tags" do
+        expect(Ticket.last.tags).to be_empty
+      end
+    end
+  end
 end

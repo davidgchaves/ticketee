@@ -3,7 +3,7 @@ class CommentsController < ApplicationController
 
   def create
     @ticket = Ticket.find params[:ticket_id]
-    prevent_unauthorize_hacking_of_state_id
+    sanitize_params!
 
     @comment = @ticket.comments.build comment_params
     @comment.user = current_user
@@ -24,9 +24,12 @@ class CommentsController < ApplicationController
       params.require(:comment).permit :text, :state_id, :tag_names
     end
 
-    def prevent_unauthorize_hacking_of_state_id
+    def sanitize_params!
       if cannot?(:"change states", @ticket.project)
         params[:comment].delete :state_id
+      end
+      if cannot?(:tag, @ticket.project)
+        params[:comment].delete :tag_names
       end
     end
 end

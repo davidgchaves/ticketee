@@ -68,6 +68,19 @@ feature "Creating Tickets" do
         end
       end
     end
+  end
+
+  context "Given a user with 'view project', 'create tickets' and 'tag' permissions" do
+    before do
+      sign_in_as! user
+      define_permission! user, "view project", project
+      define_permission! user, "create tickets", project
+      define_permission! user, "tag", project
+
+      visit "/"
+      click_link project.name
+      click_link "New Ticket"
+    end
 
     context "When she creates a ticket with tags" do
       before do

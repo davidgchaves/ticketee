@@ -12,6 +12,7 @@ class TicketsController < ApplicationController
   end
 
   def create
+    sanitize_params!
     @ticket = @project.tickets.build ticket_params
     @ticket.user = current_user
     if @ticket.save
@@ -82,6 +83,12 @@ class TicketsController < ApplicationController
       if !current_user.admin? && cannot?(:"delete tickets", @project)
         flash[:alert] = "You cannot delete tickets on this project."
         redirect_to @project
+      end
+    end
+
+    def sanitize_params!
+      if cannot?(:tag, @project)
+        params[:ticket].delete :tag_names
       end
     end
 end
