@@ -16,6 +16,25 @@ class Ticket < ActiveRecord::Base
 
   before_create :associate_tags
 
+  def self.search(query)
+    search_terms_by_criteria = {}
+    query.split(" ")
+      .inject(search_terms_by_criteria) do |acc, q|
+        search_criteria, search_term = q.split ":"
+        acc[search_criteria] = search_term
+      end
+
+    relation = []
+
+    if search_terms_by_criteria.has_key? "tag"
+      relation = joins(:tags).where "tags.name = ?", search_terms_by_criteria["tag"]
+    end
+
+    if search_terms_by_criteria.has_key? "state"
+      relation = joins(:state).where "states.name = ?", search_terms_by_criteria["state"]
+    end
+  end
+
   private
 
     def associate_tags

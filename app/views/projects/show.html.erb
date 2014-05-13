@@ -1,6 +1,25 @@
 <% title @project.name, "Projects" %>
 <h2><%= @project.name %></h2>
 
+<%= form_tag search_project_tickets_path(@project), method: :get do %>
+  <%= label_tag "search" %>
+  <%= text_field_tag "search", params[:search] %>
+  <%= submit_tag "Search" %>
+<% end %>
+
+<ul id="tickets">
+  <% @tickets.each do |ticket| %>
+    <li>
+      <%= render ticket.state if ticket.state %>
+      #<%= ticket.id %> - <%= link_to ticket.title, [@project, ticket] %>
+    </li>
+  <% end %>
+</ul>
+
+<% authorized?(:"create tickets", @project) do %>
+  <%= link_to "New Ticket", new_project_ticket_path(@project) %>
+<% end %>
+
 <% admins_only do %>
   <%= link_to "Edit Project", edit_project_path(@project) %>
   <%= link_to "Delete Project",
@@ -8,16 +27,3 @@
     method: :delete,
     data: { confirm: "Are you sure you want to delete this project?" } %>
 <% end %>
-
-<% authorized?(:"create tickets", @project) do %>
-  <%= link_to "New Ticket", new_project_ticket_path(@project) %>
-<% end %>
-
-<ul id="tickets">
-  <% @project.tickets.each do |ticket| %>
-    <li>
-      <%= render ticket.state if ticket.state %>
-      #<%= ticket.id %> - <%= link_to ticket.title, [@project, ticket] %>
-    </li>
-  <% end %>
-</ul>
