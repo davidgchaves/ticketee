@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140512105129) do
+ActiveRecord::Schema.define(version: 20140514164007) do
 
   create_table "assets", force: true do |t|
     t.string   "asset"
@@ -63,6 +63,11 @@ ActiveRecord::Schema.define(version: 20140512105129) do
 
   create_table "tags_tickets", id: false, force: true do |t|
     t.integer "tag_id"
+    t.integer "ticket_id"
+  end
+
+  create_table "ticket_watchers", id: false, force: true do |t|
+    t.integer "user_id"
     t.integer "ticket_id"
   end
 

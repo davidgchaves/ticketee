@@ -1,24 +1,27 @@
 class CommentsController < ApplicationController
   before_action :require_signin!
+  before_action :find_ticket
 
   def create
-    @ticket = Ticket.find params[:ticket_id]
     sanitize_params!
-
-    @comment = @ticket.comments.build comment_params
-    @comment.user = current_user
+    @comment = CommentWithNotifications.create(@ticket.comments, current_user, comment_params)
 
     if @comment.save
       flash[:notice] = "Comment has been created."
       redirect_to [@ticket.project, @ticket]
     else
       @states = State.all
+      @comment = @comment.comment
       flash[:alert] = "Comment has not been created."
       render template: "tickets/show"
     end
   end
 
   private
+
+    def find_ticket
+      @ticket = Ticket.find params[:ticket_id]
+    end
 
     def comment_params
       params.require(:comment).permit :text, :state_id, :tag_names

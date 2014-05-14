@@ -6,6 +6,7 @@ class Ticket < ActiveRecord::Base
   has_many :assets
   has_many :comments
   has_and_belongs_to_many :tags
+  has_and_belongs_to_many :watchers, join_table: "ticket_watchers", class_name: "User"
 
   attr_accessor :tag_names
 
@@ -15,6 +16,7 @@ class Ticket < ActiveRecord::Base
   validates :description, presence: true, length: { minimum: 10 }
 
   before_create :associate_tags
+  after_create :creator_watches_me
 
   def self.search(query)
     search_terms_by_criteria = {}
@@ -45,5 +47,13 @@ class Ticket < ActiveRecord::Base
           self.tags << Tag.find_or_create_by(name: tag_name)
         end
       end
+    end
+
+    def creator_watches_me
+      add_user_to_watchers if user
+    end
+
+    def add_user_to_watchers
+      self.watchers << user unless self.watchers.include? user
     end
 end
