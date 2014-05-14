@@ -15,6 +15,12 @@ feature "Searching" do
                                 tag_names: "I2", state: open_state
   end
 
+  let!(:ticket3) do
+    open_state = State.create name: "Open"
+    FactoryGirl.create :ticket, title: "Ticket3", project: project, user: user,
+                                tag_names: "I2", state: open_state
+  end
+
   context "Given a signed in user with 'view project' and 'tag' permissions" do
     before do
       sign_in_as! user
@@ -22,7 +28,7 @@ feature "Searching" do
       define_permission! user, "tag", project
     end
 
-    context "When she searches for tickets with a concrete tag" do
+    context "When she searches for tickets by tag" do
       before do
         visit "/"
         click_link project.name
@@ -34,11 +40,12 @@ feature "Searching" do
         within "#tickets" do
           expect(page).to have_content ticket1.title
           expect(page).to_not have_content ticket2.title
+          expect(page).to_not have_content ticket3.title
         end
       end
     end
 
-    context "When she searches for tickets with a concrete state" do
+    context "When she searches for tickets by state" do
       before do
         visit "/"
         click_link project.name
@@ -50,6 +57,24 @@ feature "Searching" do
         within "#tickets" do
           expect(page).to_not have_content ticket1.title
           expect(page).to have_content ticket2.title
+          expect(page).to have_content ticket3.title
+        end
+      end
+    end
+
+    context "When she searches for tickets matching the clicked tag" do
+      before do
+        visit "/"
+        click_link project.name
+        click_link ticket2.title
+        click_link ticket2.tag_names
+      end
+
+      scenario "she finds them" do
+        within "#tickets" do
+          expect(page).to_not have_content ticket1.title
+          expect(page).to have_content ticket2.title
+          expect(page).to have_content ticket3.title
         end
       end
     end
