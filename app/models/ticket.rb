@@ -33,6 +33,8 @@ class Ticket < ActiveRecord::Base
     if search_terms_by_criteria.has_key? "state"
       relation = joins(:state).where "states.name = ?", search_terms_by_criteria["state"]
     end
+
+    relation
   end
 
   private
