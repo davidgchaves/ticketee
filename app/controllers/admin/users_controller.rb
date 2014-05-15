@@ -56,11 +56,11 @@ class Admin::UsersController < Admin::BaseController
     end
 
     def user_params
-      params.require(:user).permit :email, :password, :admin
+      params.require(:user).permit :name, :email, :password, :admin
     end
 
     def delete_blank_password_from_params
-      params[:user].delete(:password)
-      params[:user].delete(:password_confirmation)
+      params[:user].delete :password
+      params[:user].delete :password_confirmation
     end
 end

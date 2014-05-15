@@ -12,7 +12,7 @@ class Admin::PermissionsController < Admin::BaseController
     set_new_user_permissions
 
     flash[:notice] = "Permissions updated."
-    redirect_to admin_user_permissions_path(@user)
+    redirect_to admin_user_permissions_path @user
   end
 
   private
