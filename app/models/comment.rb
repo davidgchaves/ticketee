@@ -16,25 +16,26 @@ class Comment < ActiveRecord::Base
   private
 
     def set_previous_state
-      self.previous_state = self.ticket.state
+      previous_state = ticket.state
     end
 
     def set_ticket_state
-      self.ticket.state = self.state
-      self.ticket.save!
+      ticket.state = state
+      ticket.save!
     end
 
     def associate_tag_with_ticket
       if tag_names
-        tags = tag_names.split(" ").map do |tag_name|
-          Tag.find_or_create_by name: tag_name
-        end
-        self.ticket.tags += tags
-        self.ticket.save
+        ticket.tags += create_tags
+        ticket.save
       end
     end
 
     def add_user_to_watchers
-      self.ticket.watchers << user
+      ticket.watchers << user
+    end
+
+    def create_tags
+      tag_names.split(" ").map { |tag_name| Tag.find_or_create_by name: tag_name }
     end
 end
