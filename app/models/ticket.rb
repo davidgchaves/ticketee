@@ -42,11 +42,7 @@ class Ticket < ActiveRecord::Base
   private
 
     def associate_tags
-      self.tags += create_tags(tag_names) if tag_names
-    end
-
-    def create_tags(tag_names)
-      tag_names.split(" ").map { |tag_name| Tag.find_or_create_by name: tag_name }
+      self.tags += Tag.create_tags(tag_names) if tag_names
     end
 
     def add_creator_to_watchers

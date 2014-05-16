@@ -26,16 +26,12 @@ class Comment < ActiveRecord::Base
 
     def associate_tag_with_ticket
       if tag_names
-        ticket.tags += create_tags
+        ticket.tags += Tag.create_tags tag_names
         ticket.save
       end
     end
 
     def add_user_to_watchers
       ticket.watchers << user
-    end
-
-    def create_tags
-      tag_names.split(" ").map { |tag_name| Tag.find_or_create_by name: tag_name }
     end
 end
