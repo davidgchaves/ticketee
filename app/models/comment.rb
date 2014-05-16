@@ -11,11 +11,17 @@ class Comment < ActiveRecord::Base
   before_create :set_previous_state
   after_create :set_ticket_state
   after_create :associate_tag_with_ticket
+  after_create :add_user_to_watchers
 
   private
 
     def set_previous_state
       self.previous_state = self.ticket.state
+    end
+
+    def set_ticket_state
+      self.ticket.state = self.state
+      self.ticket.save!
     end
 
     def associate_tag_with_ticket
@@ -28,8 +34,7 @@ class Comment < ActiveRecord::Base
       end
     end
 
-    def set_ticket_state
-      self.ticket.state = self.state
-      self.ticket.save!
+    def add_user_to_watchers
+      self.ticket.watchers << user
     end
 end
