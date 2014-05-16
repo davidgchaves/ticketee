@@ -19,12 +19,7 @@ class Ticket < ActiveRecord::Base
   after_create :add_creator_to_watchers
 
   def self.search(query)
-    search_terms_by_criteria = {}
-    query.split(" ")
-      .inject(search_terms_by_criteria) do |acc, q|
-        search_criteria, search_term = q.split ":"
-        acc[search_criteria] = search_term
-      end
+    search_terms_by_criteria = extract_search_terms_from query
 
     relation = []
 
@@ -51,5 +46,14 @@ class Ticket < ActiveRecord::Base
 
     def add_user_to_watchers
       self.watchers << user unless self.watchers.include? user
+    end
+
+    def self.extract_search_terms_from(query)
+      search_terms = {}
+      query.split(" ").inject(search_terms) do |acc, q|
+        search_criteria, search_term = q.split ":"
+        acc[search_criteria] = search_term
+      end
+      search_terms
     end
 end
