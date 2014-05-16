@@ -34,6 +34,14 @@ class Ticket < ActiveRecord::Base
     relation
   end
 
+  def add_to_watchers(user)
+    self.watchers << user unless self.watchers.include? user
+  end
+
+  def remove_from_watchers(user)
+    self.watchers -= [user]
+  end
+
   private
 
     def associate_tags
@@ -41,11 +49,7 @@ class Ticket < ActiveRecord::Base
     end
 
     def add_creator_to_watchers
-      add_user_to_watchers if user
-    end
-
-    def add_user_to_watchers
-      self.watchers << user unless self.watchers.include? user
+      add_to_watchers user if user
     end
 
     def self.extract_search_terms_from(query)

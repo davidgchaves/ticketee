@@ -1,7 +1,7 @@
 class TicketsController < ApplicationController
   before_action :require_signin!
   before_action :find_project
-  before_action :find_ticket, only: [:show, :edit, :update, :destroy]
+  before_action :find_ticket, only: [:show, :edit, :update, :destroy, :watch]
   before_action :authorize_create!, only: [:new, :create]
   before_action :authorize_update!, only: [:edit, :update, :update]
   before_action :authorize_delete!, only: :destroy
@@ -53,6 +53,11 @@ class TicketsController < ApplicationController
     render "projects/show"
   end
 
+  def watch
+    toggle_watcher_status_for current_user
+    redirect_to project_ticket_path(@ticket.project, @ticket)
+  end
+
   private
 
     def find_project
@@ -95,5 +100,19 @@ class TicketsController < ApplicationController
       if cannot?(:tag, @project)
         params[:ticket].delete :tag_names
       end
+    end
+
+    def toggle_watcher_status_for(user)
+      if remove_from_watchers? user
+        @ticket.remove_from_watchers user
+        flash[:notice] = "You are no longer watching this ticket."
+      else
+        @ticket.add_to_watchers user
+        flash[:notice] = "You are now watching this ticket."
+      end
+    end
+
+    def remove_from_watchers?(user)
+      @ticket.watchers.exists? user
     end
 end
