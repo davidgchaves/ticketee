@@ -107,6 +107,7 @@ GEM
     net-ssh (2.9.1)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
+    pg (0.17.1)
     polyglot (0.3.4)
     rack (1.5.2)
     rack-test (0.6.2)
@@ -197,6 +198,7 @@ DEPENDENCIES
   fog (~> 1.22.0)
   jbuilder (~> 2.0)
   jquery-rails
+  pg
   rails (~> 4.1.0)
   rspec-rails (~> 2.14.1)
   sass-rails (~> 4.0.3)
