@@ -56,3 +56,5 @@ gem 'cancancan', '~> 1.7.1'
 
 gem 'carrierwave', '~> 0.10.0'
 gem 'fog', '~> 1.22.0'
+
+gem 'rails_12factor', '~> 0.0.2', group: :production
