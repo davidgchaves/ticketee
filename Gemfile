@@ -53,3 +53,4 @@ end
 gem 'cancancan', '~> 1.7.1'
 
 gem 'carrierwave', '~> 0.10.0'
+gem 'fog', '~> 1.22.0'
