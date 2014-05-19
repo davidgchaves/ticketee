@@ -15,5 +15,3 @@ module Heartbeat
     end
   end
 end
-
-run Heartbeat::Application
