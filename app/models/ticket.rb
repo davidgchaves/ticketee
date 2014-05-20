@@ -16,6 +16,7 @@ class Ticket < ActiveRecord::Base
   validates :description, presence: true, length: { minimum: 10 }
 
   before_create :associate_tags
+  before_create :set_default_state
   after_create :add_creator_to_watchers
 
   def self.search(query)
@@ -46,6 +47,10 @@ class Ticket < ActiveRecord::Base
 
     def associate_tags
       self.tags += Tag.create_tags(tag_names) if tag_names
+    end
+
+    def set_default_state
+      self.state = State.where(name: "New").first
     end
 
     def add_creator_to_watchers
