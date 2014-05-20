@@ -16,18 +16,18 @@ class Comment < ActiveRecord::Base
   private
 
     def set_previous_state
-      previous_state = ticket.state
+      self.previous_state = ticket.state
     end
 
     def set_ticket_state
-      ticket.state = state
-      ticket.save!
+      self.ticket.state = self.state
+      self.ticket.save!
     end
 
     def associate_tag_with_ticket
       if tag_names
-        ticket.tags += Tag.create_tags tag_names
-        ticket.save
+        self.ticket.tags += Tag.create_tags tag_names
+        self.ticket.save
       end
     end
 
