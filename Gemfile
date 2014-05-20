@@ -58,3 +58,5 @@ gem 'carrierwave', '~> 0.10.0'
 gem 'fog', '~> 1.22.0'
 
 gem 'rails_12factor', '~> 0.0.2', group: :production
+
+gem 'active_model_serializers', '~> 0.8.1'
