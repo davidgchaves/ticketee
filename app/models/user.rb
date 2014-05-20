@@ -4,7 +4,14 @@ class User < ActiveRecord::Base
 
   validates_presence_of :email
 
+  before_create :generate_token
+
   def to_s
     "#{email} (#{admin? ? "Admin" : "User"})"
   end
+
+  private
+    def generate_token
+      self.token = SecureRandom.uuid
+    end
 end
