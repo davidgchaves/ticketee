@@ -3,8 +3,8 @@ class TicketsController < ApplicationController
   before_action :find_project
   before_action :find_ticket, only: [:show, :edit, :update, :destroy, :watch]
   before_action :authorize_create!, only: [:new, :create]
-  before_action :authorize_update!, only: [:edit, :update, :update]
-  before_action :authorize_delete!, only: :destroy
+  before_action :authorize_update!, only: [:edit, :update]
+  before_action :authorize_delete!, only: [:destroy]
 
   def new
     @ticket = @project.tickets.build
